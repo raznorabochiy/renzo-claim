@@ -21,7 +21,7 @@ export const KEYS_FILENAME = "keys.txt";
 export const PROXY_FILENAME = "proxy.txt";
 
 const MERKLE_ROOT =
-  "0x1ad194ea4de1735ad662533296bc84bfcd3a15baf0867a50493646355901e4ce";
+  "0x70aa49832d3c4541d455059639a3f745a033b8f42dc4b63fa9ac64acd52b58c8";
 
 export const PROOF_URL =
   `https://airdrop-data-liquifi.s3.us-west-2.amazonaws.com/{address}/${MERKLE_ROOT}-{address}.json`;
