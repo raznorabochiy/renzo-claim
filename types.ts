@@ -10,3 +10,8 @@ export type ProofDataResponse = {
     },
   ];
 };
+
+export enum ClaimType {
+  Main,
+  EigenLayer,
+}

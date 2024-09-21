@@ -8,17 +8,18 @@ import {
   CONTRACT_ADDRESS,
   PROOF_URL,
   PROXY_FILENAME,
+  REFERER,
   RPC_URL,
 } from "./constants";
-import { ProofDataResponse } from "./types";
+import { ClaimType, ProofDataResponse } from "./types";
 
 const provider = new JsonRpcProvider(RPC_URL);
 const [proxy] = await loadFromFile(PROXY_FILENAME);
 const agent = proxy ? new HttpsProxyAgent(`http://${proxy}`) : undefined;
 
-export async function getProofData(address: string) {
+export async function getProofData(address: string, claimType: ClaimType) {
   cli.spinner("Get proof data");
-  const url = PROOF_URL.replace(/{address}/g, address);
+  const url = PROOF_URL[claimType].replace(/{address}/g, address);
 
   const response = await fetch(url, {
     headers: {
@@ -26,7 +27,7 @@ export async function getProofData(address: string) {
       "sec-ch-ua": '"Chromium";v="124", "Brave";v="124", "Not-A.Brand";v="99"',
       "sec-ch-ua-mobile": "?0",
       "sec-ch-ua-platform": '"macOS"',
-      "Referer": "https://renzo.liquifi.finance/",
+      "Referer": REFERER[claimType],
       "Referrer-Policy": "strict-origin-when-cross-origin",
     },
     body: null,
@@ -40,9 +41,17 @@ export async function getProofData(address: string) {
   return data;
 }
 
-export async function claim(key: string, data: ProofDataResponse) {
+export async function claim(
+  key: string,
+  data: ProofDataResponse,
+  claimType: ClaimType,
+) {
   const wallet = new Wallet(key, provider);
-  const contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, wallet);
+  const contract = new Contract(
+    CONTRACT_ADDRESS[claimType],
+    CONTRACT_ABI,
+    wallet,
+  );
   const [event] = data.events;
 
   if (!event) {
